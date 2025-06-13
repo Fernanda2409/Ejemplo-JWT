@@ -1,42 +1,31 @@
 document.getElementById('registerform').addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    const nombre = document.getElementById('nombre').value;
-    const segundoNombre = document.getElementById('segundoNombre').value;
-    const apellidoP = document.getElementById('apellidoP').value;
-    const apellidoM = document.getElementById('apellidoM').value;
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
-    const confirmPassword = document.getElementById('confirmPassword').value;
-
-    if (password !== confirmPassword) {
-        alert('Las contraseñas no coinciden');
-        return;
-    }
+    const data = {
+        nombre: document.getElementById('nombre').value,
+        segundo_nombre: document.getElementById('segundo_nombre').value,
+        apellido_paterno: document.getElementById('apellido_paterno').value,
+        apellido_materno: document.getElementById('apellido_materno').value,
+        email: document.getElementById('email').value,
+        password: document.getElementById('password').value,
+        confirmar_password: document.getElementById('confirmar_password').value
+    };
 
     try {
-        const res = await fetch('http://localhost:3000/api/auth/register', {
+        const response = await fetch('http://localhost:3000/api/auth/register', {
             method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({
-                nombre,
-                segundoNombre,
-                apellidoP,
-                apellidoM,
-                email,
-                password
-            })
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
         });
 
-        const data = await res.json();
-        if (res.ok) {
-            alert('Usuario registrado con éxito');
+        const result = await response.text();
+        alert(result);
+
+        if (response.ok) {
             window.location.href = 'bienvenida.html';
-        } else {
-            alert(data.message || 'Error al registrar');
         }
-    } catch (err) {
-        console.log('Error en la petición del registro', err);
-        alert('Error en la red o el servicio');
+    } catch (error) {
+        console.error('Error al registrar:', error);
+        alert('Error en el registro');
     }
 });

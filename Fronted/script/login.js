@@ -1,25 +1,27 @@
 document.getElementById('loginform').addEventListener('submit', async (e) => {
     e.preventDefault();
+
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
 
     try {
-        const res = await fetch('http://localhost:3000/api/auth/login', {
+        const response = await fetch('http://localhost:3000/api/auth/login', {
             method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({email, password})
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
         });
 
-        const data = await res.json();
-        if (res.ok) {
-            alert('Bienvenido');
+        const data = await response.json();
+
+        if (response.ok) {
+            // Guarda el token en localStorage
             localStorage.setItem('token', data.token);
             window.location.href = 'index.html';
         } else {
-            alert(data.message || 'Error al iniciar sesión');
+            alert(data || 'Credenciales incorrectas');
         }
-    } catch (err) {
-        console.log('Error en la petición del login', err);
-        alert('Error en la red o el servicio');
+    } catch (error) {
+        console.error('Error al iniciar sesión:', error);
+        alert('Error en el login');
     }
 });
